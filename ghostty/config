@@ -1,0 +1,9 @@
+font-family = 'JetBrains Mono' 
+font-thicken = 1
+font-size = 13
+
+theme = "0x96f"
+
+background-opacity = 0.9
+background-blur-radius = 30
+window-theme = dark
