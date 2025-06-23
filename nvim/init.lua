@@ -518,7 +518,8 @@ require('lazy').setup({
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+          -- map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+          map('<leader>ca', require('fastaction').code_action, '[C]ode [A]ction')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -956,6 +957,7 @@ require('lazy').setup({
   require 'kickstart.plugins.spectre',
   require 'kickstart.plugins.lualine',
   require 'kickstart.plugins.noice',
+  require 'kickstart.plugins.fastaction',
 
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
