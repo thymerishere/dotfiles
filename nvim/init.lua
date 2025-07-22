@@ -161,6 +161,9 @@ vim.opt.cursorline = false
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Add virtual text diagnostics
+vim.diagnostic.config { virtual_text = true, virtual_lines = { current_line = true } }
+
 -- Center on up and down
 vim.keymap.set('n', '<c-d>', '<c-d>zz')
 vim.keymap.set('n', '<c-u>', '<c-u>zz')
@@ -288,9 +291,39 @@ require('lazy').setup({
     end,
   },
 
+  -- LuaSnip for snippet management
   {
     'benfowler/telescope-luasnip.nvim',
     lazy = false,
+    config = function()
+      local luasnip = require 'luasnip'
+      luasnip.config.setup {}
+
+      local snip = luasnip.snippet
+      local node = luasnip.snippet_node
+      local text = luasnip.text_node
+      local insert = luasnip.insert_node
+      local func = luasnip.function_node
+      local choice = luasnip.choice_node
+      local dynamicn = luasnip.dynamic_node
+
+      luasnip.add_snippets(nil, {
+        python = {
+          snip('cell', {
+            text { '@app.cell', 'def _():', '\t' },
+            insert(0),
+          }),
+          snip('pl', {
+            text { 'import polars as pl', '' },
+            insert(0),
+          }),
+          snip('px', {
+            text { 'from plotly import express as px', '' },
+            insert(0),
+          }),
+        },
+      })
+    end,
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -428,6 +461,7 @@ require('lazy').setup({
       },
     },
   },
+  -- Help pages for loops in Lua
   { 'Bilal2453/luvit-meta', lazy = true },
   {
     -- Main LSP Configuration
@@ -490,6 +524,7 @@ require('lazy').setup({
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
+          -- map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
           map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
           -- Find references for the word under your cursor.
@@ -598,7 +633,9 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
-        julials = {},
+        -- julials = {},
+
+        cssls = {},
 
         clangd = {},
 
@@ -751,32 +788,6 @@ require('lazy').setup({
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
-      luasnip.config.setup {}
-
-      local snip = luasnip.snippet
-      local node = luasnip.snippet_node
-      local text = luasnip.text_node
-      local insert = luasnip.insert_node
-      local func = luasnip.function_node
-      local choice = luasnip.choice_node
-      local dynamicn = luasnip.dynamic_node
-
-      luasnip.add_snippets(nil, {
-        python = {
-          snip('cell', {
-            text { '@app.cell', 'def _():', '\t' },
-            insert(0),
-          }),
-          snip('pl', {
-            text { 'import polars as pl', '' },
-            insert(0),
-          }),
-          snip('px', {
-            text { 'from plotly import express as px', '' },
-            insert(0),
-          }),
-        },
-      })
 
       cmp.setup {
         snippet = {
@@ -945,30 +956,31 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.colorscheme',
-  require 'kickstart.plugins.oil',
-  require 'kickstart.plugins.flash',
-  require 'kickstart.plugins.lsp_signature',
-  require 'kickstart.plugins.gitsigns',
-  require 'kickstart.plugins.fugitive',
-  require 'kickstart.plugins.arrow',
-  require 'kickstart.plugins.spectre',
-  require 'kickstart.plugins.lualine',
-  require 'kickstart.plugins.noice',
-  require 'kickstart.plugins.fastaction',
+  require 'plugins.debug',
+  require 'plugins.autopairs',
+  require 'plugins.colorscheme',
+  require 'plugins.oil',
+  require 'plugins.flash',
+  require 'plugins.lsp_signature',
+  require 'plugins.gitsigns',
+  require 'plugins.fugitive',
+  require 'plugins.arrow',
+  require 'plugins.spectre',
+  require 'plugins.noice',
+  require 'plugins.fastaction',
+  require 'plugins.heirline',
 
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.molten',
-  -- require 'kickstart.plugins.obsidian',
-  -- require 'kickstart.plugins.harpoon',
-  -- require 'kickstart.plugins.tailwind-tools',
-  -- require 'kickstart.plugins.surround',
-  -- require 'kickstart.plugins.kitty',
-  -- require 'kickstart.plugins.multicursor',
+  -- require 'plugins.lualine',
+  -- require 'plugins.indent_line',
+  -- require 'plugins.lint',
+  -- require 'plugins.neo-tree',
+  -- require 'plugins.molten',
+  -- require 'plugins.obsidian',
+  -- require 'plugins.harpoon',
+  -- require 'plugins.tailwind-tools',
+  -- require 'plugins.surround',
+  -- require 'plugins.kitty',
+  -- require 'plugins.multicursor',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
