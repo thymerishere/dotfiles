@@ -636,8 +636,9 @@ require('lazy').setup({
         -- julials = {},
 
         cssls = {},
-
         clangd = {},
+        ts_ls = {},
+        tinymist = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -929,7 +930,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typst' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -965,7 +966,6 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'plugins.debug',
   require 'plugins.autopairs',
   require 'plugins.colorscheme',
   require 'plugins.oil',
@@ -978,6 +978,8 @@ require('lazy').setup({
   require 'plugins.noice',
   require 'plugins.fastaction',
   require 'plugins.heirline',
+  require 'plugins.dap',
+  require 'plugins.dap-view',
 
   -- require 'plugins.lualine',
   -- require 'plugins.indent_line',

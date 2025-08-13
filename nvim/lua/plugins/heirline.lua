@@ -242,7 +242,11 @@ return {
       hl = function()
         if vim.bo.modified then
           -- use `force` because we need to override the child's hl foreground
-          return { fg = colors.green, old = true, force = true }
+          return {
+            fg = colors.green,
+            bold = true,
+            force = true,
+          }
         end
       end,
     }
@@ -299,7 +303,13 @@ return {
       ViMode,
       MacroRec,
       LeftSep,
-      { Git, LeftSep, FileNameBlock, LeftSep, LSPActive },
+      {
+        Git,
+        LeftSep,
+        FileNameBlock,
+        LeftSep,
+        LSPActive,
+      },
       Align,
       { Ruler, Space, ScrollBar },
     }
