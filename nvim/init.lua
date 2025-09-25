@@ -68,7 +68,13 @@ vim.opt.cursorline = false
 vim.opt.scrolloff = 10
 
 -- Add virtual text diagnostics
-vim.diagnostic.config { virtual_text = true, virtual_lines = { current_line = true } }
+vim.diagnostic.config {
+  virtual_text = true,
+  -- virtual_lines = { current_line = false },
+}
+
+-- Temporary workarround for issue with treesitter giving nil errors
+vim.hl = vim.highlight
 
 -- Center on up and down
 vim.keymap.set('n', '<c-d>', '<c-d>zz')
@@ -112,8 +118,29 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- Keybinds for LSP actions
 vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename symbol' })
-vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Action' })
+-- vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Action' })
 -- vim.keymap.set('n', 'K', vim.lsp.buf.signature_help, { desc = 'Hover info' })
+vim.keymap.set(
+  { 'n', 'x' },
+  '<leader>ca',
+  '<cmd>lua require("fastaction").code_action()<CR>',
+  { desc = "Display code actions", buffer = bufnr }
+)
+
+vim.lsp.config['basedpyright'] = {
+  settings = {
+    basedpyright = {
+      -- Using Ruff's import organizer
+      disableOrganizeImports = true,
+    },
+    python = {
+      analysis = {
+        -- Ignore all files for analysis to exclusively use Ruff for linting
+        ignore = { '*' },
+      },
+    },
+  },
+}
 
 
 -- [[ Basic Autocommands ]]
@@ -229,8 +256,8 @@ require('lazy').setup({
       { "<leader>fr",       function() Snacks.picker.recent() end,                                  desc = "Recent" },
       -- git
       { "<leader>gb",       function() Snacks.picker.git_branches() end,                            desc = "Git Branches" },
-      { "<leader>gl",       function() Snacks.picker.git_log() end,                                 desc = "Git Log" },
-      { "<leader>gL",       function() Snacks.picker.git_log_line() end,                            desc = "Git Log Line" },
+      -- { "<leader>gl",       function() Snacks.picker.git_log() end,                                 desc = "Git Log" },
+      -- { "<leader>gL",       function() Snacks.picker.git_log_line() end,                            desc = "Git Log Line" },
       { "<leader>gs",       function() Snacks.picker.git_status() end,                              desc = "Git Status" },
       { "<leader>gS",       function() Snacks.picker.git_stash() end,                               desc = "Git Stash" },
       { "<leader>gd",       function() Snacks.picker.git_diff() end,                                desc = "Git Diff (Hunks)" },
@@ -454,7 +481,7 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
-          { name = 'nvim_lsp_signature_help' }
+          -- { name = 'nvim_lsp_signature_help' }
         },
       }
     end,
@@ -526,8 +553,10 @@ require('lazy').setup({
   require 'plugins.heirline',
   require 'plugins.dap',
   require 'plugins.dap-view',
+  require 'plugins.typst-preview',
+  require 'plugins.render-markdown',
+  require 'plugins.spectre',
 
-  -- require 'plugins.spectre',
   -- require 'plugins.lsp_signature',
   -- require 'plugins.noice',
   -- require 'plugins.lualine',
