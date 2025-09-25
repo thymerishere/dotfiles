@@ -238,6 +238,18 @@ keybinds clear-defaults=true {
     renamepane {
         bind "esc" { UndoRenamePane; SwitchToMode "pane"; }
     }
+
+    // Plugin configuration
+    shared_except "locked" {
+        bind "Ctrl t" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/room.wasm" {
+                floating true
+                ignore_case true
+                quick_jump true
+            };
+            SwitchToMode "locked"
+        }
+    }
 }
 
 // Plugin aliases - can be used to change the implementation of Zellij
@@ -406,6 +418,14 @@ theme "tokyo-night-dark-custom"
 // Default: normal
 // 
 default_mode "locked"
+
+// Whether to show release notes
+show_release_notes false
+
+// Whether to show the tips
+show_startup_tips false
+
+// Defaults, kept for future reference
  
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
@@ -580,4 +600,3 @@ default_mode "locked"
 // Whether to show release notes on first version run
 // Default: true
 // 
-show_release_notes false
