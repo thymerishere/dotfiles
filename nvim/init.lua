@@ -127,20 +127,40 @@ vim.keymap.set(
   { desc = "Display code actions", buffer = bufnr }
 )
 
-vim.lsp.config['basedpyright'] = {
-  settings = {
-    basedpyright = {
-      -- Using Ruff's import organizer
-      disableOrganizeImports = true,
+-- vim.lsp.config['basedpyright'] = {
+--   settings = {
+--     basedpyright = {
+--       -- Using Ruff's import organizer
+--       disableOrganizeImports = true,
+--     },
+--     python = {
+--       analysis = {
+--         -- Ignore all files for analysis to exclusively use Ruff for linting
+--         ignore = { '*' },
+--       },
+--     },
+--   },
+-- }
+
+
+vim.lsp.config['pyrefly'] = {
+  cmd = { 'pyrefly', 'lsp' },
+  filetypes = { 'python' },
+  root_markers = { '.git', "pyproject.toml" },
+  init_options = {
+    pyrefly = {
+      displayTypeErrors = "force-on"
     },
-    python = {
-      analysis = {
-        -- Ignore all files for analysis to exclusively use Ruff for linting
-        ignore = { '*' },
-      },
-    },
-  },
+  }
 }
+
+vim.lsp.config['mojo'] = {
+  cmd = { 'mojo-lsp-server' },
+  filetypes = { 'mojo' },
+  root_markers = { '.git' },
+}
+
+vim.lsp.enable("mojo")
 
 
 -- [[ Basic Autocommands ]]
@@ -231,6 +251,10 @@ require('lazy').setup({
             text { 'from plotly import express as px', '' },
             insert(0),
           }),
+          snip('ft', {
+            text { '"%FT%T%:z"' },
+            insert(0),
+          }),
         },
       })
     end,
@@ -316,7 +340,7 @@ require('lazy').setup({
   {
     'mason-org/mason-lspconfig.nvim',
     opts = {
-      ensure_installed = { 'lua_ls', 'gopls', 'tinymist', 'basedpyright', 'rust_analyzer' },
+      ensure_installed = { 'lua_ls', 'gopls', 'tinymist', 'rust_analyzer' },
     },
     dependencies = {
       { 'mason-org/mason.nvim', opts = {} },
