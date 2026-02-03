@@ -141,6 +141,13 @@ vim.keymap.set(
 --     },
 --   },
 -- }
+--
+
+-- Auto start treesitter
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { '<filetype>' },
+  callback = function() vim.treesitter.start() end,
+})
 
 
 vim.lsp.config['pyrefly'] = {
@@ -308,7 +315,7 @@ require('lazy').setup({
       { "<leader>sl",       function() Snacks.picker.loclist() end,                                 desc = "Location List" },
       { "<leader>sm",       function() Snacks.picker.marks() end,                                   desc = "Marks" },
       { "<leader>sM",       function() Snacks.picker.man() end,                                     desc = "Man Pages" },
-      { "<leader>sp",       function() Snacks.picker.lazy() end,                                    desc = "Search for Plugin Spec" },
+      -- { "<leader>sp",       function() Snacks.picker.lazy() end,                                    desc = "Search for Plugin Spec" },
       { "<leader>sq",       function() Snacks.picker.qflist() end,                                  desc = "Quickfix List" },
       { "<leader>sR",       function() Snacks.picker.resume() end,                                  desc = "Resume" },
       { "<leader>su",       function() Snacks.picker.undo() end,                                    desc = "Undo History" },
@@ -535,35 +542,40 @@ require('lazy').setup({
       }
     end,
   },
+  -- {
+  --   'nvim-treesitter/nvim-treesitter',
+  --   lazy = false,
+  --   build = ':TSUpdate',
+  --   opts = {
+  --     ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typst', 'svelte' },
+  --   },
+  --
+  -- },
+
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    lazy = false,
     build = ':TSUpdate',
+    branch = "main",
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typst' },
-      -- Autoinstall languages that are not installed
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typst', 'svelte', 'css', 'javascript' },
       auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vi_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
+      highlight = { enable = true },
+      indent = { enable = true },
     },
-    config = function(_, opts)
-      -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
-
-      -- There are additional nvim-treesitter modules that you can use to interact
-      -- with nvim-treesitter. You should go explore a few and see what interests you:
-      --
-      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-    end,
+    -- config = function(_, opts)
+    --   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    --
+    --   ---@diagnostic disable-next-line: missing-fields
+    --   require('nvim-treesitter').setup(opts)
+    --
+    --   -- There are additional nvim-treesitter modules that you can use to interact
+    --   -- with nvim-treesitter. You should go explore a few and see what interests you:
+    --   --
+    --   --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+    --   --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+    --   --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    -- end,
   },
 
   require 'plugins.autopairs',
@@ -577,7 +589,7 @@ require('lazy').setup({
   require 'plugins.heirline',
   require 'plugins.dap',
   require 'plugins.dap-view',
-  require 'plugins.typst-preview',
+  -- require 'plugins.typst-preview',
   require 'plugins.render-markdown',
   require 'plugins.spectre',
 
