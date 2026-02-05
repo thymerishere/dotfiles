@@ -73,9 +73,6 @@ vim.diagnostic.config {
   -- virtual_lines = { current_line = false },
 }
 
--- Temporary workarround for issue with treesitter giving nil errors
-vim.hl = vim.highlight
-
 -- Center on up and down
 vim.keymap.set('n', '<c-d>', '<c-d>zz')
 vim.keymap.set('n', '<c-u>', '<c-u>zz')
@@ -142,12 +139,6 @@ vim.keymap.set(
 --   },
 -- }
 --
-
--- Auto start treesitter
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { '<filetype>' },
-  callback = function() vim.treesitter.start() end,
-})
 
 
 vim.lsp.config['pyrefly'] = {
@@ -542,42 +533,8 @@ require('lazy').setup({
       }
     end,
   },
-  -- {
-  --   'nvim-treesitter/nvim-treesitter',
-  --   lazy = false,
-  --   build = ':TSUpdate',
-  --   opts = {
-  --     ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typst', 'svelte' },
-  --   },
-  --
-  -- },
 
-  { -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    lazy = false,
-    build = ':TSUpdate',
-    branch = "main",
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typst', 'svelte', 'css', 'javascript' },
-      auto_install = true,
-      highlight = { enable = true },
-      indent = { enable = true },
-    },
-    -- config = function(_, opts)
-    --   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    --
-    --   ---@diagnostic disable-next-line: missing-fields
-    --   require('nvim-treesitter').setup(opts)
-    --
-    --   -- There are additional nvim-treesitter modules that you can use to interact
-    --   -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --   --
-    --   --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --   --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --   --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-    -- end,
-  },
-
+  require 'plugins.treesitter',
   require 'plugins.autopairs',
   require 'plugins.colorscheme',
   require 'plugins.oil',
