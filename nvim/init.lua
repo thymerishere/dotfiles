@@ -140,7 +140,6 @@ vim.keymap.set(
 -- }
 --
 
-
 vim.lsp.config['pyrefly'] = {
   cmd = { 'pyrefly', 'lsp' },
   filetypes = { 'python' },
@@ -151,6 +150,16 @@ vim.lsp.config['pyrefly'] = {
     },
   }
 }
+
+vim.lsp.config('ruff', {
+  -- init_options = {
+  --   settings = {
+  --     -- Ruff language server settings go here
+  --   }
+  -- }
+})
+
+vim.lsp.enable('ruff')
 
 vim.lsp.config['mojo'] = {
   cmd = { 'mojo-lsp-server' },
@@ -174,6 +183,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- A supposed fix for the 'attempt to index ...' errors
+vim.hl = vim.highlight
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -375,7 +387,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'golines' },
-        python = { 'ruff_fix', 'ruff_format' },
+        python = { 'ruff_fix', 'ruff_format', 'ruff_organize_imports' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -519,10 +531,10 @@ require('lazy').setup({
       require('mini.ai').setup { n_lines = 500 }
       require('mini.surround').setup {
         mappings = {
-          add = 'ysa',            -- Add surrounding in Normal and Visual modes
-          delete = 'ysd',         -- Delete surrounding
-          find = 'ysf',           -- Find surrounding (to the right)
-          find_left = 'ysF',      -- Find surrounding (to the left)
+          add = 'ysa',    -- Add surrounding in Normal and Visual modes
+          delete = 'ysd', -- Delete surrounding
+          -- find = 'ysf',           -- Find surrounding (to the right)
+          -- find_left = 'ysF',      -- Find surrounding (to the left)
           highlight = 'ysh',      -- Highlight surrounding
           replace = 'ysr',        -- Replace surrounding
           update_n_lines = 'ysn', -- Update `n_lines`
@@ -549,6 +561,7 @@ require('lazy').setup({
   -- require 'plugins.typst-preview',
   require 'plugins.render-markdown',
   require 'plugins.spectre',
+  require 'plugins.colorizer'
 
   -- require 'plugins.lsp_signature',
   -- require 'plugins.noice',

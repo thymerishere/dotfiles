@@ -38,7 +38,7 @@ return {
         'vimdoc',
         'xml',
         'yaml',
-        'zellij',
+        -- 'zellij',
         'zsh',
       }
 
@@ -51,12 +51,13 @@ return {
       })
 
       vim.cmd.syntax("off")
-      vim.api.nvim_create_autocmd("BufReadPost", {
-        pattern = "*",
-        callback = function()
-          -- can start a specific treesitter on a specific buffer also
-          -- vim.treesitter.start(0, "c")
-          vim.treesitter.start()
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          local treesitter = require('nvim-treesitter')
+          local lang = vim.treesitter.language.get_lang(args.match)
+          if vim.list_contains(treesitter.get_installed(), lang) then
+            vim.treesitter.start(args.buf)
+          end
         end,
       })
     end,
