@@ -117,12 +117,17 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename symbol' })
 -- vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Action' })
 -- vim.keymap.set('n', 'K', vim.lsp.buf.signature_help, { desc = 'Hover info' })
-vim.keymap.set(
-  { 'n', 'x' },
-  '<leader>ca',
-  '<cmd>lua require("fastaction").code_action()<CR>',
-  { desc = "Display code actions", buffer = bufnr }
-)
+-- vim.keymap.set(
+--   { 'n', 'x' },
+--   '<leader>ca',
+--   '<cmd>lua require("fastaction").code_action()<CR>',
+--   { desc = "Display code actions", buffer = bufnr }
+-- )
+
+
+vim.keymap.set({ "n", "x" }, "<leader>ca", function()
+  require("tiny-code-action").code_action()
+end, { noremap = true, silent = true })
 
 -- vim.lsp.config['basedpyright'] = {
 --   settings = {
@@ -430,14 +435,50 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
-      'hrsh7th/cmp-nvim-lsp-signature-help'
+      'hrsh7th/cmp-nvim-lsp-signature-help',
+      'lukas-reineke/cmp-under-comparator'
     },
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
 
+      -- Comparator: deprioritize Python private modules (paths with "._")
+      local function deprioritize_private_modules(entry1, entry2)
+        local function is_private(entry)
+          local item = entry.completion_item
+
+          -- Collect all possible text sources
+          local text = table.concat({
+            item.label or "",
+            item.detail or "",
+            (item.labelDetails and item.labelDetails.description) or "",
+          }, " ")
+
+          -- Detect private modules anywhere in the import path
+          return text:match("%._") or text:match("^_")
+        end
+
+        local e1_private = is_private(entry1)
+        local e2_private = is_private(entry2)
+
+        if e1_private ~= e2_private then
+          return not e1_private
+        end
+      end
+
       cmp.setup {
+        sorting = {
+          comparators = {
+            deprioritize_private_modules,
+            cmp.config.compare.offset,
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            require("cmp-under-comparator").under,
+            cmp.config.compare.kind,
+          }
+        },
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -547,6 +588,7 @@ require('lazy').setup({
   },
 
   require 'plugins.treesitter',
+  require 'plugins.tiny-code-action',
   require 'plugins.autopairs',
   require 'plugins.colorscheme',
   require 'plugins.oil',
@@ -554,15 +596,15 @@ require('lazy').setup({
   require 'plugins.gitsigns',
   require 'plugins.fugitive',
   require 'plugins.arrow',
-  require 'plugins.fastaction',
   require 'plugins.heirline',
   require 'plugins.dap',
   require 'plugins.dap-view',
-  -- require 'plugins.typst-preview',
   require 'plugins.render-markdown',
   require 'plugins.spectre',
   require 'plugins.colorizer'
 
+  -- require 'plugins.fastaction',
+  -- require 'plugins.typst-preview',
   -- require 'plugins.lsp_signature',
   -- require 'plugins.noice',
   -- require 'plugins.lualine',
