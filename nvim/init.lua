@@ -107,43 +107,19 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+-- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 
 -- Keybinds for LSP actions
 vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename symbol' })
--- vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Action' })
--- vim.keymap.set('n', 'K', vim.lsp.buf.signature_help, { desc = 'Hover info' })
--- vim.keymap.set(
---   { 'n', 'x' },
---   '<leader>ca',
---   '<cmd>lua require("fastaction").code_action()<CR>',
---   { desc = "Display code actions", buffer = bufnr }
--- )
 
-
+-- Code action with tiny-code-action
 vim.keymap.set({ "n", "x" }, "<leader>ca", function()
   require("tiny-code-action").code_action()
 end, { noremap = true, silent = true })
-
--- vim.lsp.config['basedpyright'] = {
---   settings = {
---     basedpyright = {
---       -- Using Ruff's import organizer
---       disableOrganizeImports = true,
---     },
---     python = {
---       analysis = {
---         -- Ignore all files for analysis to exclusively use Ruff for linting
---         ignore = { '*' },
---       },
---     },
---   },
--- }
---
 
 vim.lsp.config['pyrefly'] = {
   cmd = { 'pyrefly', 'lsp' },
@@ -174,6 +150,32 @@ vim.lsp.config['mojo'] = {
 
 vim.lsp.enable("mojo")
 
+-- Svelte LSP
+vim.lsp.config("svelte", {
+  cmd = { "svelteserver", "--stdio" },
+  filetypes = { "svelte" },
+  root_markers = {
+    "svelte.config.js",
+    "svelte.config.mjs",
+    "package.json",
+    "tsconfig.json",
+    "jsconfig.json",
+    ".git",
+  },
+
+  on_attach = function(client, bufnr)
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      pattern = { "*.js", "*.ts" },
+      callback = function(ctx)
+        client:notify("$/onDidChangeTsOrJsFile", {
+          uri = vim.uri_from_fname(ctx.file),
+        })
+      end,
+    })
+  end,
+})
+
+vim.lsp.enable("svelte")
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -601,11 +603,12 @@ require('lazy').setup({
   require 'plugins.dap-view',
   require 'plugins.render-markdown',
   require 'plugins.spectre',
-  require 'plugins.colorizer'
+  require 'plugins.colorizer',
+  require 'plugins.lsp_signature',
+  require 'plugins.smart-splits'
 
   -- require 'plugins.fastaction',
   -- require 'plugins.typst-preview',
-  -- require 'plugins.lsp_signature',
   -- require 'plugins.noice',
   -- require 'plugins.lualine',
   -- require 'plugins.indent_line',
